@@ -1,18 +1,22 @@
+import { storageService } from "./storage.service.js";
+import { mapService } from './map.service.js'
 export const locService = {
     getLocs,
     addLoc,
     deleteLoc,
-    centerMap,
+    setLocToGo,
 }
 
 // import {utilService} from './services/util.service.js'
+const LOC_KEY = 'locDB'
 
-const locs = [
+let locs = [
     { id: makeId(), name: 'Greatplace', lat: 32.047104, lng: 34.832384 },
     { id: makeId(), name: 'Neveragain', lat: 32.047201, lng: 34.832581 }
 ]
 
 function getLocs() {
+    locs = storageService.loadFromStorage(LOC_KEY) || locs
     return new Promise((resolve, reject) => {
         setTimeout(() => {
             resolve(locs);
@@ -21,21 +25,25 @@ function getLocs() {
 }
 
 function deleteLoc(id) {
-    var loc = getLocById(id)
-    console.log(loc);
-    gPlaces.splice(placeIdx, 1)
-    // _savePlacesToStorage()
+    var locIdx = getLocIdx(id)
+    locs.splice(locIdx, 1)
+    storageService.saveToStorage(LOC_KEY, locs)
+
 }
 
-function centerMap(id) {
+function setLocToGo(id) {
     const loc = getLocById(id)
     const pos = { lat: loc.lat, lng: loc.lng }
-    console.log(pos);
-    gMap.setCenter(pos)
+    mapService.centerMap(pos)
 }
 
 function getLocById(locId) {
-    var loc = locs.find((loc) => loc.id = locId)
+    var loc = locs.find((loc) => loc.id === locId)
+    return loc
+}
+
+function getLocIdx(locId) {
+    var loc = locs.findIndex((loc) => loc.id === locId)
     return loc
 }
 
@@ -48,7 +56,7 @@ function addLoc(pos) {
         lng: pos.lng,
     }
     locs.push(loc)
-    console.log(locs)
+    storageService.saveToStorage(LOC_KEY, locs)
 }
 
 

@@ -17,19 +17,19 @@ function onInit() {
       map.addListener('click', (mapClickEv) => {
         const pos = getPositionFromClick(mapClickEv)
         locService.addLoc(pos)
+        onGetPlaces()
       })
     })
-    .catch(() => console.log('Error: cannot init map'))
+    .catch(() => console.log('Error: cannot init map')) 
     onGetPlaces()
 }
 
 function onGetPlaces() {
     locService.getLocs()
-        .then((places) => renderPlacesss(places))
-    // console.log(places);
+        .then((places) => renderPlaces(places))
 }
 
-function renderPlacesss(places) {
+function renderPlaces(places) {
     console.log(places);
 
     let strHtml = places.map((place) => {
@@ -46,16 +46,15 @@ function renderPlacesss(places) {
 function onDelete(id){
     console.log(id);
     locService.deleteLoc(id)
+    onGetPlaces()
 }
 
 function onGo(id){
     console.log(id);
-    locService.centerMap(id)
+    locService.setLocToGo(id)
 }
 
-// This function provides a Promise API to the callback-based-api of getCurrentPosition
 function getPosition() {
-  console.log('Getting Pos')
   return new Promise((resolve, reject) => {
     navigator.geolocation.getCurrentPosition(resolve, reject)
   })
