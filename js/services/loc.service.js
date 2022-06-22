@@ -7,13 +7,14 @@ export const locService = {
     addLoc,
     deleteLoc,
     setLocToGo,
+    getPositionFromClick
 }
 
 const LOC_KEY = 'locDB'
 
 let locs = [
-    { id: makeId(), name: 'Greatplace', lat: 32.047104, lng: 34.832384 },
-    { id: makeId(), name: 'Neveragain', lat: 32.047201, lng: 34.832581 }
+    { id: utilService.makeId(), name: 'Greatplace', lat: 32.047104, lng: 34.832384 },
+    { id: utilService.makeId(), name: 'Neveragain', lat: 32.047201, lng: 34.832581 }
 ]
 
 function getLocs() {
@@ -36,6 +37,8 @@ function setLocToGo(id) {
     const loc = getLocById(id)
     const pos = { lat: loc.lat, lng: loc.lng }
     mapService.centerMap(pos)
+    mapService.addMarker(pos)
+    setQueryString(pos)
 }
 
 function getLocById(locId) {
@@ -48,10 +51,10 @@ function getLocIdx(locId) {
     return loc
 }
 
-function addLoc(pos) {
-    const locName = prompt('Name your place')
+function addLoc(pos, locName) {
+    if (!locName) return
     const loc = {
-        id: makeId(),
+        id: utilService.makeId(),
         name: locName,
         lat: pos.lat,
         lng: pos.lng,
@@ -72,6 +75,17 @@ function getInputPos(address) {
 
    
   })
+}
+
+function setQueryString(pos) {
+  const queryStringParams = `?lat=${pos.lat.toFixed(2)}&lng=${pos.lng.toFixed(2)}`
+  const newUrl =
+    window.location.protocol +
+    '//' +
+    window.location.host +
+    window.location.pathname +
+    queryStringParams
+  window.history.pushState({ path: newUrl }, '', newUrl)
 }
 
 function _connectToGeoloc(address) {

@@ -1,6 +1,6 @@
 import { locService } from './services/loc.service.js'
 import { mapService } from './services/map.service.js'
-import { utilService } from './services/util.service.js'
+
 window.onload = onInit
 window.onAddMarker = onAddMarker
 window.onPanTo = onPanTo
@@ -8,52 +8,60 @@ window.onGetLocs = onGetLocs
 window.onGetUserPos = onGetUserPos
 window.onGetInputLocation = onGetInputLocation
 
-
-window.onGo = onGo;
-window.onDelete = onDelete;
+window.onGo = onGo
+window.onDelete = onDelete
+window.onCopyToClipboard = onCopyToClipboard
 
 function onInit() {
   mapService
     .initMap()
     .then((map) => {
+      renderQueryStringParams()
       map.addListener('click', (mapClickEv) => {
         const pos = locService.getPositionFromClick(mapClickEv)
-        locService.addLoc(pos)
+        const locName = prompt('Enter location name')
+        locService.addLoc(pos, locName)
         onGetPlaces()
       })
     })
-    .catch(() => console.log('Error: cannot init map')) 
-    onGetPlaces()
+    .catch(() => console.log('Error: cannot init map'))
+  onGetPlaces()
 }
 
 function onGetPlaces() {
-    locService.getLocs()
-        .then((places) => renderPlaces(places))
+  locService.getLocs().then((places) => renderPlaces(places))
 }
 
 function renderPlaces(places) {
-    console.log(places);
-
-    let strHtml = places.map((place) => {
-        return ` <tr>
+  let strHtml = places.map((place) => {
+    return ` <tr>
                   <td>${place.name}</td>
                   <td><button onclick="onDelete('${place.id}')">Delete</button></td>
                   <td><button onclick="onGo('${place.id}')">Go</button></td>
                 </tr>`
-    })
+  })
 
-    document.querySelector('.locs-container').innerHTML = strHtml.join('')
+  document.querySelector('.locs-container').innerHTML = strHtml.join('')
 }
 
-function onDelete(id){
-    console.log(id);
-    locService.deleteLoc(id)
-    onGetPlaces()
+function renderQueryStringParams() {
+  const queryStringParams = new URLSearchParams(window.location.search)
+  const pos = {
+    lat: +queryStringParams.get('lat') || 31.78,
+    lng: +queryStringParams.get('lng') || 35.19,
+  }
+  onPanTo(pos.lat, pos.lng)
 }
 
-function onGo(id){
-    console.log(id);
-    locService.setLocToGo(id)
+function onDelete(id) {
+  console.log(id)
+  locService.deleteLoc(id)
+  onGetPlaces()
+}
+
+function onGo(id) {
+  console.log(id)
+  locService.setLocToGo(id)
 }
 
 function getPosition() {
@@ -62,9 +70,9 @@ function getPosition() {
   })
 }
 
-function onAddMarker() {
+function onAddMarker(pos) {
   console.log('Adding a marker')
-  mapService.addMarker({ lat: 32.0749831, lng: 34.9120554 })
+  mapService.addMarker({ lat: pos.lat, lng: pos.lng })
 }
 
 function onGetLocs() {
@@ -81,9 +89,13 @@ function onGetUserPos() {
         '.user-pos'
       ).innerText = `Latitude: ${pos.coords.latitude} - Longitude: ${pos.coords.longitude}`
       if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition((position) =>
+        navigator.geolocation.getCurrentPosition((position) => {
           mapService.setCurrPosition(position)
-        )
+          onAddMarker({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          })
+        })
       }
     })
     .catch((err) => {
@@ -99,13 +111,12 @@ function onGetInputLocation(ev) {
   ev.preventDefault()
   const address = document.querySelector('.loc-search').value
   const pos = locService.getInputPos(address)
-    pos.then(pos => {
-        if(pos) onPanTo(pos.lat, pos.lng)
-        else alert('No such location!')
-    })
-  
+  pos.then((pos) => {
+    if (pos) onPanTo(pos.lat, pos.lng)
+    else alert('No such location!')
+  })
 }
 
-function onCopyToClipboard(){
-    navigator.clipboard.writeText(window.location.href);
+function onCopyToClipboard() {
+  navigator.clipboard.writeText(window.location.href)
 }
