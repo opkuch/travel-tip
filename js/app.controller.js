@@ -13,7 +13,6 @@ window.onDelete = onDelete
 window.onCopyToClipboard = onCopyToClipboard
 
 function onInit() {
-<<<<<<< HEAD
   mapService
     .initMap()
     .then((map) => {
@@ -27,19 +26,6 @@ function onInit() {
     })
     .catch(() => console.log('Error: cannot init map'))
   onGetPlaces()
-=======
-    mapService
-        .initMap()
-        .then((map) => {
-            map.addListener('click', (mapClickEv) => {
-                const pos = locService.getPositionFromClick(mapClickEv)
-                locService.addLoc(pos)
-                onGetPlaces()
-            })
-        })
-        .catch(() => console.log('Error: cannot init map'))
-    onGetPlaces()
->>>>>>> f5b3928b94fb3b99bfe4547e8c580c5a3873e490
 }
 
 function onGetPlaces() {
@@ -48,14 +34,16 @@ function onGetPlaces() {
 
 function renderPlaces(places) {
   let strHtml = places.map((place) => {
-    return ` <tr>
-                  <td>${place.name}</td>
-                  <td><button class="btn delete-btn" onclick="onDelete('${place.id}')">Delete</button></td>
-                  <td><button class="btn go-btn" onclick="onGo('${place.id}')">Go</button></td>
-                </tr>`
+    return `    <article class="loc-card">
+                  <span class="loc-name">${place.name}</span>
+                  <div class="card-btns">
+                    <button class="btn delete-btn" onclick="onDelete('${place.id}')">Delete</button>
+                    <button class="btn go-btn" onclick="onGo('${place.id}')">Go</button>
+                  </div>  
+                </article>
+                `
   })
 
-<<<<<<< HEAD
   document.querySelector('.locs-container').innerHTML = strHtml.join('')
 }
 
@@ -75,22 +63,6 @@ function onDelete(id) {
 
 function onGo(id) {
   locService.setLocToGo(id)
-=======
-    document.querySelector('.locs-table').innerHTML = strHtml.join('')
-}
-
-function onDelete(id) {
-    console.log(id);
-    locService.deleteLoc(id)
-    onGetPlaces()
-}
-
-function onGo(id) {
-    console.log(id);
-    locService.setLocToGo(id)
-    renderCurrLocation(id)
-    // onSetQueryStringParams(id)
->>>>>>> f5b3928b94fb3b99bfe4547e8c580c5a3873e490
 }
 
 function getPosition() {
@@ -99,15 +71,9 @@ function getPosition() {
     })
 }
 
-<<<<<<< HEAD
 function onAddMarker(pos) {
   console.log('Adding a marker')
   mapService.addMarker({ lat: pos.lat, lng: pos.lng })
-=======
-function onAddMarker() {
-    console.log('Adding a marker')
-    mapService.addMarker({ lat: 32.0749831, lng: 34.9120554 })
->>>>>>> f5b3928b94fb3b99bfe4547e8c580c5a3873e490
 }
 
 function onGetLocs() {
@@ -118,12 +84,8 @@ function onGetLocs() {
 }
 
 function onGetUserPos() {
-<<<<<<< HEAD
   getPosition()
     .then((pos) => {
-      document.querySelector(
-        '.user-pos'
-      ).innerText = `Latitude: ${pos.coords.latitude} - Longitude: ${pos.coords.longitude}`
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition((position) => {
           mapService.setCurrPosition(position)
@@ -137,22 +99,6 @@ function onGetUserPos() {
     .catch((err) => {
       console.log('err!!!', err)
     })
-=======
-    getPosition()
-        .then((pos) => {
-            document.querySelector(
-                '.user-pos'
-            ).innerText = `Latitude: ${pos.coords.latitude} - Longitude: ${pos.coords.longitude}`
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition((position) =>
-                    mapService.setCurrPosition(position)
-                )
-            }
-        })
-        .catch((err) => {
-            console.log('err!!!', err)
-        })
->>>>>>> f5b3928b94fb3b99bfe4547e8c580c5a3873e490
 }
 function onPanTo(lat, lng) {
     console.log('Panning the Map')
@@ -160,25 +106,14 @@ function onPanTo(lat, lng) {
 }
 
 function onGetInputLocation(ev) {
-<<<<<<< HEAD
-  ev.preventDefault()
-  const address = document.querySelector('.loc-search').value
-  const pos = locService.getInputPos(address)
-  pos.then((pos) => {
-    if (pos) onPanTo(pos.lat, pos.lng)
-    else alert('No such location!')
-  })
-}
-
-function onCopyToClipboard() {
-  navigator.clipboard.writeText(window.location.href)
-}
-=======
     ev.preventDefault()
     const address = document.querySelector('.loc-search').value
     const pos = locService.getInputPos(address)
     pos.then(pos => {
-        if (pos) onPanTo(pos.lat, pos.lng)
+        if (pos) {
+            onPanTo(pos.lat, pos.lng)
+            onAddMarker(pos)
+        }
         else alert('No such location!')
     })
 
@@ -194,31 +129,3 @@ function renderCurrLocation(id) {
 }
 
 
-// function onSetQueryStringParams(id) {
-//     const currLoc = locService.getLocById(id)
-
-//     const queryStringParams = `?lat=${currLoc.lat}&lng=${currLoc.lng}`
-//     const newUrl = window.location.protocol + '//' + window.location.host + window.location.pathname + queryStringParams
-//     window.history.pushState({ path: newUrl }, '', newUrl)
-// }
-
-// function renderMapByQueryStringParams(id) {
-//     // Retrieve data from the current query-params
-//     const currLoc = locService.getLocById(id)
-//     const queryStringParams = new URLSearchParams(window.location.search)
-
-//     ///להפעיל את הגו ךפי האיידי
-
-//     const filterBy = {
-//         vendor: queryStringParams.get('vendor') || '',
-//         minSpeed: +queryStringParams.get('minSpeed') || 0,
-//     }
-
-//     if (!filterBy.vendor && !filterBy.minSpeed) return
-
-//     document.querySelector('.filter-vendor-select').value = filterBy.vendor
-//     document.querySelector('.filter-speed-range').value = filterBy.minSpeed
-//     setCarFilter(filterBy)
-// }
-
->>>>>>> f5b3928b94fb3b99bfe4547e8c580c5a3873e490

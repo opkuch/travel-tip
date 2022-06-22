@@ -1,19 +1,35 @@
+@import url('https://fonts.googleapis.com/css2?family=Anek+Malayalam&family=Battambang:wght@300&family=Jolly+Lodger&family=Lobster&family=Mr+Dafoe&family=Roboto:wght@300&family=Satisfy&family=VT323&family=Work+Sans&display=swap');
 * {
     box-sizing: border-box;
 }
 
 body {
     margin: 0;
+    font-family: 'Anek Malayalam';
 }
 
 header {
     display: flex;
-    justify-content: space-between;
     align-items: center;
     margin-bottom: 10px;
     background-color: rgb(63, 133, 223);
     color: white;
-    padding: 10px;
+}
+
+header h1 {
+    min-width: 150px;
+    margin-inline-start: 0.5rem;
+}
+
+header .form-container {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    margin-inline-end: 3rem;
+}
+
+header .form-container > * {
+    margin-inline-start: 1rem;
 }
 
 header .btn {
@@ -32,7 +48,7 @@ header input {
     border: 0;
 }
 
-.main-contant {
+.main-content {
     display: flex;
     flex-direction: row;
     margin: 15px;
@@ -57,6 +73,16 @@ header input {
     margin-bottom: 20px;
 }
 
+.map-btns {
+    width: 100%;
+    background-color: aliceblue;
+    border-radius: 5px;
+    margin-block-start: 0.6rem;
+    padding: 0.5rem;
+    display: flex;
+    justify-content: space-around;
+}
+
 .map-btns .btn {
     background-color: rgb(63 133 223);
     margin: 5px;
@@ -64,19 +90,43 @@ header input {
 }
 
 .btn {
-    padding: 7px;
+    padding: 0.4rem;
     border: 0;
     border-radius: 7px;
+    cursor: pointer;
 }
 
-.btn.delete-btn {
+.card-btns .delete-btn {
     background-color: rgb(241, 89, 89);
     color: rgb(253, 251, 251);
     /* font-weight: 600; */
 }
 
-.btn.go-btn {
+.card-btns .go-btn {
     background-color: rgb(63 133 223);
     color: rgb(250, 250, 251);
     /* font-weight: 600; */
+}
+
+.loc-card {
+    display: flex;
+    background-color: aliceblue;
+    border-radius: 5px;
+}
+
+.loc-name {
+    font-size: 1.5rem;
+    margin-inline-start: 3rem;
+}
+.loc-card > * {
+    margin-block: 0.5rem;
+}
+.card-btns {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    margin-inline-end: 3rem;
+}
+.card-btns > * {
+    margin-inline-start: 0.5rem;
 }

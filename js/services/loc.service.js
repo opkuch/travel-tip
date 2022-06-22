@@ -7,12 +7,9 @@ export const locService = {
     addLoc,
     deleteLoc,
     setLocToGo,
-<<<<<<< HEAD
-    getPositionFromClick
-=======
     getPositionFromClick,
     getLocById,
->>>>>>> f5b3928b94fb3b99bfe4547e8c580c5a3873e490
+    getInputPos,
 }
 
 const LOC_KEY = 'locDB'
