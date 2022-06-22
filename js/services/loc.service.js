@@ -38,6 +38,7 @@ function setLocToGo(id) {
     const pos = { lat: loc.lat, lng: loc.lng }
     mapService.centerMap(pos)
     mapService.addMarker(pos)
+    _connectToWeather(pos)
     setQueryString(pos)
 }
 
@@ -95,4 +96,12 @@ function _connectToGeoloc(address) {
   ).then((res) => {
     return res.json()
   })
+}
+
+function _connectToWeather(pos) {
+    const API_KEY = 'b782e194b7431c9f8b601b14909a8165'
+    return fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${pos.lat}&lon=${pos.lng}&appid={${API_KEY}}`)
+    .then((res) => {
+        console.log(res.json())
+    })
 }

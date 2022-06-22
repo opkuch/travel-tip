@@ -54,13 +54,11 @@ function renderQueryStringParams() {
 }
 
 function onDelete(id) {
-  console.log(id)
   locService.deleteLoc(id)
   onGetPlaces()
 }
 
 function onGo(id) {
-  console.log(id)
   locService.setLocToGo(id)
 }
 
