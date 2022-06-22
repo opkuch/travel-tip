@@ -9,6 +9,9 @@ window.onGetUserPos = onGetUserPos
 window.onGetInputLocation = onGetInputLocation
 
 
+window.onGo = onGo;
+window.onDelete = onDelete;
+
 function onInit() {
   mapService
     .initMap()
@@ -16,14 +19,44 @@ function onInit() {
       map.addListener('click', (mapClickEv) => {
         const pos = locService.getPositionFromClick(mapClickEv)
         locService.addLoc(pos)
+        onGetPlaces()
       })
     })
-    .catch(() => console.log('Error: cannot init map'))
+    .catch(() => console.log('Error: cannot init map')) 
+    onGetPlaces()
 }
 
-// This function provides a Promise API to the callback-based-api of getCurrentPosition
+function onGetPlaces() {
+    locService.getLocs()
+        .then((places) => renderPlaces(places))
+}
+
+function renderPlaces(places) {
+    console.log(places);
+
+    let strHtml = places.map((place) => {
+        return ` <tr>
+                  <td>${place.name}</td>
+                  <td><button onclick="onDelete('${place.id}')">Delete</button></td>
+                  <td><button onclick="onGo('${place.id}')">Go</button></td>
+                </tr>`
+    })
+
+    document.querySelector('.locs-container').innerHTML = strHtml.join('')
+}
+
+function onDelete(id){
+    console.log(id);
+    locService.deleteLoc(id)
+    onGetPlaces()
+}
+
+function onGo(id){
+    console.log(id);
+    locService.setLocToGo(id)
+}
+
 function getPosition() {
-  console.log('Getting Pos')
   return new Promise((resolve, reject) => {
     navigator.geolocation.getCurrentPosition(resolve, reject)
   })

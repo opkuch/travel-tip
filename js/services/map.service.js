@@ -3,6 +3,7 @@ export const mapService = {
   addMarker,
   panTo,
   setCurrPosition,
+  centerMap
 }
 
 var gMap, gInfoWindow
@@ -17,6 +18,9 @@ function initMap(lat = 32.0749831, lng = 34.9120554) {
     gInfoWindow = new google.maps.InfoWindow()
     return gMap
   })
+}
+function centerMap(pos) {
+  gMap.setCenter(pos)
 }
 
 function setCurrPosition(position) {
