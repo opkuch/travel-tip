@@ -1,42 +1,55 @@
 export const locService = {
-    getLocs,
-    addLoc
+  getLocs,
+  addLoc,
+  getInputPos,
 }
 
-// import {utilService} from './services/util.service.js'
+import { utilService } from './util.service.js'
 
 const locs = [
-    { name: 'Greatplace', lat: 32.047104, lng: 34.832384 }, 
-    { name: 'Neveragain', lat: 32.047201, lng: 34.832581 }
+  { name: 'Greatplace', lat: 32.047104, lng: 34.832384 },
+  { name: 'Neveragain', lat: 32.047201, lng: 34.832581 },
 ]
 
 function getLocs() {
-    return new Promise((resolve, reject) => {
-        setTimeout(() => {
-            resolve(locs);
-        }, 2000)
-    });
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve(locs)
+    }, 2000)
+  })
 }
 
 function addLoc(pos) {
-    const locName = prompt('Name your place')
-    const loc = {
-        id: makeId(),
-        name: locName,
-        lat: pos.lat,
-        lng: pos.lng,
-    }
-    locs.push(loc)
-    console.log(locs)
+  const locName = prompt('Name your place')
+  const loc = {
+    id: utilService.makeId(),
+    name: locName,
+    lat: pos.lat,
+    lng: pos.lng,
+  }
+  locs.push(loc)
+  console.log(locs)
 }
 
+function getPositionFromClick(ev) {
+  const pos = ev.latLng
+  return { lat: pos.lat(), lng: pos.lng() }
+}
 
-function makeId(length = 6) {
-    const possible =
-      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-    var txt = ''
-    for (var i = 0; i < length; i++) {
-      txt += possible.charAt(Math.floor(Math.random() * possible.length))
-    }
-    return txt
-  }
+function getInputPos(address) {
+  const formatAddress = address.replaceAll(' ', '+')
+  return _connectToGeoloc(formatAddress).then((data) => {
+    if (data.results.length) return data.results[0].geometry.location
+
+   
+  })
+}
+
+function _connectToGeoloc(address) {
+  const API_KEY = 'AIzaSyAZeW6x69JDcxYkCYh9QbNsTtiEW15Vuvk'
+  return fetch(
+    `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${API_KEY}`
+  ).then((res) => {
+    return res.json()
+  })
+}

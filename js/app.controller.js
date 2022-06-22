@@ -1,18 +1,20 @@
 import { locService } from './services/loc.service.js'
 import { mapService } from './services/map.service.js'
-
+import { utilService } from './services/util.service.js'
 window.onload = onInit
 window.onAddMarker = onAddMarker
 window.onPanTo = onPanTo
 window.onGetLocs = onGetLocs
 window.onGetUserPos = onGetUserPos
+window.onGetInputLocation = onGetInputLocation
+
 
 function onInit() {
   mapService
     .initMap()
     .then((map) => {
       map.addListener('click', (mapClickEv) => {
-        const pos = getPositionFromClick(mapClickEv)
+        const pos = locService.getPositionFromClick(mapClickEv)
         locService.addLoc(pos)
       })
     })
@@ -46,19 +48,31 @@ function onGetUserPos() {
         '.user-pos'
       ).innerText = `Latitude: ${pos.coords.latitude} - Longitude: ${pos.coords.longitude}`
       if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition((position) => mapService.setCurrPosition(position))
+        navigator.geolocation.getCurrentPosition((position) =>
+          mapService.setCurrPosition(position)
+        )
       }
     })
     .catch((err) => {
       console.log('err!!!', err)
     })
 }
-function onPanTo() {
+function onPanTo(lat, lng) {
   console.log('Panning the Map')
-  mapService.panTo(35.6895, 139.6917)
+  mapService.panTo(lat, lng)
 }
 
-function getPositionFromClick(ev) {
-  const pos = ev.latLng
-  return { lat: pos.lat(), lng: pos.lng() }
+function onGetInputLocation(ev) {
+  ev.preventDefault()
+  const address = document.querySelector('.loc-search').value
+  const pos = locService.getInputPos(address)
+    pos.then(pos => {
+        if(pos) onPanTo(pos.lat, pos.lng)
+        else alert('No such location!')
+    })
+  
+}
+
+function onCopyToClipboard(){
+    navigator.clipboard.writeText(window.location.href);
 }
