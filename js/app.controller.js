@@ -7,6 +7,9 @@ window.onPanTo = onPanTo;
 window.onGetLocs = onGetLocs;
 window.onGetUserPos = onGetUserPos;
 
+window.onGo = onGo;
+window.onDelete = onDelete;
+
 function onInit() {
     mapService.initMap()
         .then((map) => {
@@ -16,6 +19,36 @@ function onInit() {
           })
         })
         .catch(() => console.log('Error: cannot init map'));
+
+        onGetPlaces()
+}
+
+function onGetPlaces() {
+    locService.getLocs()
+        .then((places) => renderPlaces(places))
+    // console.log(places);
+}
+
+function renderPlaces(places) {
+    console.log(places);
+
+    let strHtml = places.map((place) => {
+        return ` <tr>
+                  <td>${place.name}</td>
+                  <td><button onclick="onDelete(${place.id})">Delete</button></td>
+                  <td><button onclick="onGo(${place.id})">Go</button></td>
+                </tr>`
+    })
+
+    document.querySelector('.locs-container').innerHTML = strHtml.join('')
+}
+
+function onDelete(id){
+    console.log(id);
+}
+
+function onGo(id){
+    console.log(id);
 }
 
 // This function provides a Promise API to the callback-based-api of getCurrentPosition
