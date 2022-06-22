@@ -117,6 +117,8 @@ header input {
 .loc-name {
     font-size: 1.5rem;
     margin-inline-start: 3rem;
+    min-width: 300px;
+    max-width: 400px;
 }
 .loc-card > * {
     margin-block: 0.5rem;
@@ -129,4 +131,17 @@ header input {
 }
 .card-btns > * {
     margin-inline-start: 0.5rem;
+}
+
+.loader.hide {
+    display: none;
+}
+.loader {
+    position: absolute;
+    top: 30%;
+    left: 65%;
+}
+.loader img{
+    max-width: 200px;
+    max-height: 200px;
 }

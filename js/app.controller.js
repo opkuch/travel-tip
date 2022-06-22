@@ -11,6 +11,7 @@ window.onGetInputLocation = onGetInputLocation
 window.onGo = onGo
 window.onDelete = onDelete
 window.onCopyToClipboard = onCopyToClipboard
+window.toggleLoader = toggleLoader
 
 function onInit() {
   mapService
@@ -29,7 +30,12 @@ function onInit() {
 }
 
 function onGetPlaces() {
-  locService.getLocs().then((places) => renderPlaces(places))
+    toggleLoader()
+  locService.getLocs().then((places) => {
+    console.log('hi')
+    renderPlaces(places)
+    toggleLoader()
+})
 }
 
 function renderPlaces(places) {
@@ -123,9 +129,7 @@ function onCopyToClipboard() {
     navigator.clipboard.writeText(window.location.href);
 }
 
-function renderCurrLocation(id) {
-    const currLoc = locService.getLocById(id)
-    document.querySelector('.locs').innerText = currLoc.name
-}
-
-
+function toggleLoader() {
+    document.querySelector('.loader').classList.toggle('hide')
+  }
+  
